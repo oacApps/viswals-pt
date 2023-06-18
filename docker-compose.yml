@@ -25,23 +25,23 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./volumes/publisher-app/log/:/var/log/publisher/
+      - ./volumes/publisher/log/:/var/log/publisher/
     networks:
       - vis_app_net
     depends_on:
       - message-broker
     restart: on-failure
 
-  user-manager-app:
+  consumer-app:
     build:
       context: .
-      dockerfile: user-manager/Dockerfile
-    image: mmr/user-manager-app:0.0.1
-    container_name: user-manager
+      dockerfile: consumer/Dockerfile
+    image: mmr/consumer-app:0.0.1
+    container_name: consumer-app
     ports:
       - "8100:8100"
     volumes:
-      - ./volumes/user-manager-app/log/:/var/log/user-manager/
+      - ./volumes/consumer/log/:/var/log/consumer/
     networks:
       - vis_app_net
     depends_on:
