@@ -1,0 +1,45 @@
+# Server
+server:
+  port: 8101
+  servlet:
+    context-path: /api
+
+spring:
+  # RabbitMQ connection properties
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: mmr.rmq.user
+    password: Pa55word
+  # Cache
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: password123
+      timeout: 60000
+  datasource:
+    url: jdbc:postgresql://localhost:5432/viswals
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+# RabbitMQ queue properties
+stream:
+  csv:
+    queue: mmr.queue.csv.data
+    exchange: mmr.exchange.filedata
+    routing: mmr.routing.key
+
+# Logging
+logging:
+  level:
+    root: INFO
+    org:
+      apache:
+        tomcat: error
+        catalina: error
+      springframework: ERROR
+      hibernate: ERROR
+
