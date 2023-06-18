@@ -1,6 +1,10 @@
 ### Project
 
 #### Tech stack:
+    Run the application
+
+    'docker-compose -p viswals-pt up'
+#### Tech stack:
     # Java - 17
 
     # Springboot - 3.1.0
