@@ -4,6 +4,24 @@
     Run the application
 
     'docker-compose -p viswals-pt up'
+
+    Solution 1:
+    Navigate to the publisher location and execute the command "mvn clean install."
+    Proceed to the consumer location and run the command "mvn clean install."
+    
+    Finally, execute the command "docker-compose -p viswals-pt up". Please ensure that Maven is installed on your system.
+    
+    Solution 2:
+    I have included a convenient build script that automates the process. Before using it, ensure that Maven is installed. Follow these steps:
+    Run the command "chmod +x build_and_run.sh" to change the permissions of the script.
+    Execute the script to handle the necessary build and run operations by using this command "./build_and_run.sh".
+    
+    Solution 3:
+    Although it is generally discouraged, I have uploaded the required JAR files to a repository. To proceed with this approach, execute the command:
+    "docker-compose -p viswals-pt up"
+    
+    Solution 4:
+    If you prefer immediate assistance, I would be more than happy to join a call to guide you through the setup process promptly.
 #### Tech stack:
     # Java - 17
 
