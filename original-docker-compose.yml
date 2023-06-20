@@ -1,0 +1,106 @@
+version: "3.2"
+services:
+  message-broker:
+    build:
+      context: .
+      dockerfile: docker/rabbitMQ/Dockerfile
+    image: mmr/rabbitmq-3.7.4:0.0.1
+    container_name: rabbitmq-message-broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./volumes/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./volumes/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - vis_app_net
+    restart: unless-stopped
+
+  publisher-app:
+    build:
+      context: .
+      dockerfile: publisher/Dockerfile
+    image: mmr/publisher-app:0.0.1
+    container_name: publisher-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./volumes/publisher/log/:/var/log/publisher/
+    networks:
+      - vis_app_net
+    depends_on:
+      - message-broker
+    restart: on-failure
+
+  consumer-app:
+    build:
+      context: .
+      dockerfile: consumer/Dockerfile
+    image: mmr/consumer-app:0.0.1
+    container_name: consumer-app
+    ports:
+      - "8100:8100"
+    volumes:
+      - ./volumes/consumer/log/:/var/log/consumer/
+    networks:
+      - vis_app_net
+    depends_on:
+      - message-broker
+      - redis-local
+      - db-postgres
+    restart: unless-stopped
+
+  redis-local:
+    container_name: redis-server
+    build:
+      context: .
+      dockerfile: docker/redis/Dockerfile
+    image: mmr/redis-latest:0.0.1
+    environment:
+      - REDIS_MASTER_PASSWORD=password123
+      - REDIS_PASSWORD=password123
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - "6379:6379"
+    depends_on:
+      - message-broker
+    networks:
+      - vis_app_net
+    restart: on-failure
+
+  db-postgres:
+    container_name: postgres-db
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
+    image: mmr/postgres-15.3:0.0.1
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgres/data:/var/lib/postgresql/data
+    command: postgres -c 'max_connections=500'
+    networks:
+      - vis_app_net
+    restart: on-failure
+#      POSTGRES_HOST_AUTH_METHOD: trust
+
+  pgadmin:
+    container_name: postgres-admin-ui
+    build:
+      context: .
+      dockerfile: docker/pgadmin/Dockerfile
+    image: mmr/pgadmin4-latest:0.0.1
+    networks:
+      - vis_app_net
+    ports:
+      - "8200:80"
+    volumes:
+      - ./volumes/pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: muhammed.mashiur@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+
+networks:
+  vis_app_net:
+    driver: bridge
